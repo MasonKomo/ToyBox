@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "421926019004",
+    "project_id": "toystore-da9ec",
+    "storage_bucket": "toystore-da9ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421926019004:android:dfdc068160809db9aa55b9",
+        "android_client_info": {
+          "package_name": "com.example.toy_checkout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421926019004-a0eog8lvn6fqsc6jagr3jbub1dr9pv64.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjVoGM9n-C9JU3odkqRoRGxNcQHWO5yZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421926019004-a0eog8lvn6fqsc6jagr3jbub1dr9pv64.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "421926019004-32ad64pmjmn0865i5frj7981gt77edpo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "komotechToyStoreCheckout.ToyStore2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
