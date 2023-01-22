@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -77,35 +78,42 @@ class _MyHomeState extends State<MyHome> {
     });
   }
 
+  final user = FirebaseAuth.instance.currentUser!;
+
+  // sign user out method
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Toybox 🧸'),
+        title: Text('Toybox🧸'),
         actions: [
           IconButton(
               icon:
                   const Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
               onPressed: () {
                 showSearch(context: context, delegate: CustomSearchDelegate());
-              })
+              }),
+          IconButton(
+            onPressed: signUserOut,
+            icon: Icon(Icons.logout),
+          )
         ],
       ),
-      body: Center(
-        child: StreamBuilder<QuerySnapshot>(
-          stream: _firestore.collection('toys').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return buildToyList(context, snapshot);
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
+      body: StreamBuilder(
+        stream: _firestore.collection('toys').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return buildToyList(context, snapshot);
+          }
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -130,10 +138,9 @@ class _MyHomeState extends State<MyHome> {
             label: "Settings",
           ),
         ],
+        onTap: _onItemTapped,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Color.fromARGB(255, 94, 94, 94),
-        onTap: _onItemTapped,
       ),
     );
   }
