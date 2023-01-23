@@ -47,23 +47,18 @@ class _MyHomeState extends State<MyHome> {
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Toys',
-      style: optionStyle,
     ),
     Text(
       'Index 1: Search',
-      style: optionStyle,
     ),
     Text(
       'Index 2: Add Toys',
-      style: optionStyle,
     ),
     Text(
       'Index 3: Database',
-      style: optionStyle,
     ),
     Text(
       'Index 4: Settings',
-      style: optionStyle,
     ),
   ];
 
@@ -87,6 +82,10 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
+    // Set the screen width and height.
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Toybox🧸'),
@@ -146,6 +145,46 @@ class _MyHomeState extends State<MyHome> {
   }
 }
 
+newShowFilterBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: new Icon(Icons.photo),
+              title: new Text('Photo'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: new Icon(Icons.music_note),
+              title: new Text('Music'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: new Icon(Icons.videocam),
+              title: new Text('Video'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: new Icon(Icons.share),
+              title: new Text('Share'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      });
+}
+
 // Add toy bottom sheet
 showFilterBottomSheet(BuildContext context) {
   showModalBottomSheet(
@@ -159,7 +198,7 @@ showFilterBottomSheet(BuildContext context) {
         return StatefulBuilder(builder: (context, StateSetter setState) {
           return Container(
             width: screenWidth,
-            height: screenHeight,
+            height: screenHeight * 0.75,
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
