@@ -41,15 +41,22 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
+
         try {
           await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: emailController.text,
             password: passwordController.text,
           );
+          final userId = FirebaseAuth.instance.currentUser!.uid;
 
-          await _firestore.collection('users').add({
+          Map<String, String> data = {
+            'uId': userId,
             'email': emailController.text,
-          });
+            'accountCreated': Timestamp.now().toString(),
+          };
+
+          await _firestore.collection('users').doc(userId).set(data);
+
           // pop the loading circle
         } on FirebaseAuthException catch (e) {
           // pop the loading circle

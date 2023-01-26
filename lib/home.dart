@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 
 // My files
 import 'package:toy_checkout/widgets/toyList.dart';
-
 import 'Views/custom_search_delegate.dart';
 
 double screenWidth = 0.0;
@@ -42,8 +41,10 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(color: Color.fromARGB(255, 79, 79, 79));
+  static const TextStyle optionStyle = TextStyle(
+      fontSize: 30,
+      fontWeight: FontWeight.bold,
+      color: Color.fromARGB(255, 44, 143, 228));
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Toys',
@@ -73,8 +74,6 @@ class _MyHomeState extends State<MyHome> {
     });
   }
 
-  final user = FirebaseAuth.instance.currentUser!;
-
   // sign user out method
   void signUserOut() {
     FirebaseAuth.instance.signOut();
@@ -86,13 +85,19 @@ class _MyHomeState extends State<MyHome> {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
+    final user = FirebaseAuth.instance.currentUser!;
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    // Print Firebase UID.
+    print("UserId is: " + userId);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Toybox🧸'),
         actions: [
           IconButton(
-              icon:
-                  const Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0)),
+              icon: const Icon(Icons.search,
+                  color: Color.fromARGB(255, 255, 255, 255)),
               onPressed: () {
                 showSearch(context: context, delegate: CustomSearchDelegate());
               }),
@@ -103,11 +108,15 @@ class _MyHomeState extends State<MyHome> {
         ],
       ),
       body: StreamBuilder(
-        stream: _firestore.collection('toys').snapshots(),
+        stream: _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('toys')
+            .snapshots(), // add here
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text("You haven't added any toys yet!"),
             );
           } else {
             return buildToyList(context, snapshot);
@@ -138,8 +147,10 @@ class _MyHomeState extends State<MyHome> {
           ),
         ],
         onTap: _onItemTapped,
+        unselectedFontSize: 14.0,
+        unselectedItemColor: Color.fromARGB(255, 77, 146, 206),
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Color.fromARGB(255, 44, 143, 228),
       ),
     );
   }
@@ -276,26 +287,49 @@ showFilterBottomSheet(BuildContext context) {
                   OutlinedButton(
                     child: Text('Add Toy'),
                     onPressed: () async {
-                      final newId =
-                          await _firestore.runTransaction((transaction) async {
-                        final highestIdQuery = await _firestore
-                            .collection('toys')
-                            .orderBy('id', descending: true)
-                            .limit(1)
-                            .get();
-                        final highestId = highestIdQuery.docs.first['id'];
-                        return highestId + 1;
-                      });
+                      int newId;
+                      final user = FirebaseAuth.instance.currentUser!;
+                      final userId = FirebaseAuth.instance.currentUser!.uid;
+
+                      final QuerySnapshot snapshot = await _firestore
+                          .collection('users')
+                          .doc(userId)
+                          .collection('toys')
+                          .get();
+
+                      if (snapshot.docs.length > 0) {
+                        newId = await _firestore
+                            .runTransaction((transaction) async {
+                          final highestIdQuery = await _firestore
+                              .collection('users')
+                              .doc(userId)
+                              .collection('toys')
+                              .orderBy('id', descending: true)
+                              .limit(1)
+                              .get();
+                          final highestId = highestIdQuery.docs.first['id'];
+                          return highestId + 1;
+                        });
+                      } else {
+                        newId = 0001;
+                      }
 
                       final secondsSinceEpoch =
                           -3153600000; // 100 years in seconds
                       final defaultTime = Timestamp.fromMillisecondsSinceEpoch(
                           secondsSinceEpoch * 1000);
                       print(defaultTime);
+
                       // Add a new toy to the database with the given name and quantity
-                      await _firestore.collection('toys').add({
+                      await _firestore
+                          .collection('users')
+                          .doc(userId)
+                          .collection('toys')
+                          .doc(_toyName)
+                          .set({
                         'name': _toyName,
                         'quantity': _toyQuantity,
+                        'userId': userId,
                         'checkedOut': false,
                         'id': newId,
                         'checkedOutBy': "",

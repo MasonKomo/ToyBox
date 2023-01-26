@@ -77,8 +77,17 @@ class _LoginPageState extends State<LoginPage> {
 
                 // logo
                 const Icon(
-                  Icons.lock,
+                  Icons.toys,
+                  color: Color.fromARGB(255, 44, 143, 228),
                   size: 100,
+                ),
+
+                Text(
+                  'ToyBox',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 23, 112, 189),
+                    fontSize: 28,
+                  ),
                 ),
 
                 const SizedBox(height: 50),
