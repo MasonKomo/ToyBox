@@ -1,5 +1,5 @@
 # ToyBox
-
+![screenshot](repoImages/screenshot.png)
 ToyBox is a Flutter application inspired by the chaos that is the result of having two young children and way too many toys. Too often I found the state of our home out of control. With toys covering virtually every inch of the floor, I decided it was time for a change. So I began working on ToyBox. The idea is to build an app that will allow children to check out toys just like a library system. 
 
 
